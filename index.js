@@ -77,4 +77,30 @@ function processCommand(command) {
     }
 }
 
+function sortTodos(strategy, todos) {
+    switch(strategy) {
+        case 'importance':
+            todos.sort((a, b) => b.importance - a.importance);
+            break;
+        case 'user':
+            todos.sort((a, b) => {
+                if (!a.user) return 1;
+                if (!b.user) return -1;
+                return a.user.localeCompare(b.user);
+            });
+            break;
+        case 'date':
+            todos.sort((a, b) => {
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return b.date - a.date; 
+            });
+            break;
+        default:
+            console.log('Unknown sort strategy');
+            return;    
+    }
+    todos.forEach(todo => console.log(todo));
+}
+
 // TODO you can do it!
