@@ -27,7 +27,7 @@ function getTodos() {
     return allComments;
 }
 
-function parseTodos(line) {
+function parseTodo(line) {
     const content = line.replace('// TODO ', '');
 
     const result = {
@@ -36,6 +36,9 @@ function parseTodos(line) {
         date: null,
         importance: 0
     };
+
+    const importanceMatches = content.match(/!/g);
+    result.importance = importanceMatches ? importanceMatches.length : 0;
 
     const parts = content.split(';');
     if (parts.length >= 3) {
@@ -49,9 +52,9 @@ function parseTodos(line) {
     return result;
 }
 
-function processCommand(command) {
+function processCommand(fullCommand) {
     const allTodos = getTodos();
-    const [command, arg] = command.split(' ');
+    const [command, arg] = fullCommand.split(' ');
 
     switch (command) {
         case 'exit':
@@ -61,7 +64,7 @@ function processCommand(command) {
             allTodos.forEach(todo => console.log(todo))
             break;
         case 'important':
-            const importantTodos = allTodos.filter(todo => todo.includes('!'));
+            const importantTodos = allTodos.filter(todo => todo.importance > 0);
             importantTodos.forEach(todo => console.log(todo));
             break;
         case 'user':
@@ -69,8 +72,11 @@ function processCommand(command) {
                 console.log('Please, specify the user');
                 break;
             }
-            const userTodos = todos.filter(todo => todo.user && todo.user.toLowerCase() === arg.toLowerCase());
+            const userTodos = allTodos.filter(todo => todo.user && todo.user.toLowerCase() === arg.toLowerCase());
             userTodos.forEach(user => console.log(user));
+        case 'sort':
+            sortTodos(arg, allTodos);
+            break;
         default:
             console.log('wrong command');
             break;
