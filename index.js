@@ -16,6 +16,12 @@ function processCommand(command) {
         case 'exit':
             process.exit(0);
             break;
+        case 'show':
+            const allComments = getAllToDoComments();
+            for (const comment of allComments) {
+                console.log(comment);
+            }
+            break;
         default:
             console.log('wrong command');
             break;
