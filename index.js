@@ -22,4 +22,18 @@ function processCommand(command) {
     }
 }
 
+function getAllToDoComments() {
+    const allComments = [];
+    files.forEach(fileContent => {
+        const lines = fileContent.split('\n');
+        lines.forEach(line => {
+            const index = line.indexOf('// TODO ');
+            if (index !== -1){
+                allComments.push(line.slice(index));
+            }
+        })
+    })
+    return allComments;
+}
+
 // TODO you can do it!
