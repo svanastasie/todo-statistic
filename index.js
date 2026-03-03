@@ -12,7 +12,7 @@ function getFiles() {
 }
 
 function getTodos() {
-    const allComments = [];
+    const allTodos = [];
     files.forEach(fileContent => {
         const lines = fileContent.split('\n');
         lines.forEach(line => {
@@ -20,11 +20,11 @@ function getTodos() {
             if (index !== -1) {
                 const rawTodo = line.slice(index);
                 const parsed = parseTodo(rawTodo);
-                allComments.push(parsed);
+                allTodos.push(parsed);
             }
         })
     })
-    return allComments;
+    return allTodos;
 }
 
 function parseTodo(line) {
@@ -68,14 +68,27 @@ function processCommand(fullCommand) {
             importantTodos.forEach(todo => console.log(todo));
             break;
         case 'user':
-            if (!arg){
+            if (!arg) {
                 console.log('Please, specify the user');
                 break;
             }
             const userTodos = allTodos.filter(todo => todo.user && todo.user.toLowerCase() === arg.toLowerCase());
             userTodos.forEach(user => console.log(user));
         case 'sort':
+            if (!arg) {
+                console.log('Please, specify the sort');
+                break;
+            }
             sortTodos(arg, allTodos);
+            break;
+        case 'date':
+            if (!arg) {
+                console.log('Please, specify the date');
+                break;
+            }
+            const afterDate = parseDate(arg);
+            const todosAfterDate = allTodos.filter(todo => todo.date && todo.date >= afterDate);
+            todosAfterDate.forEach(date => console.log(date));
             break;
         default:
             console.log('wrong command');
@@ -84,7 +97,7 @@ function processCommand(fullCommand) {
 }
 
 function sortTodos(strategy, todos) {
-    switch(strategy) {
+    switch (strategy) {
         case 'importance':
             todos.sort((a, b) => b.importance - a.importance);
             break;
@@ -99,14 +112,22 @@ function sortTodos(strategy, todos) {
             todos.sort((a, b) => {
                 if (!a.date) return 1;
                 if (!b.date) return -1;
-                return b.date - a.date; 
+                return b.date - a.date;
             });
             break;
         default:
             console.log('Unknown sort strategy');
-            return;    
+            return;
     }
     todos.forEach(todo => console.log(todo));
+}
+
+function parseDate(str) {
+    const parts = str.split('-').map(Number);
+    const year = parts[0];
+    const month = parts[1] ? parts[1] - 1 : 0;
+    const day = parts[2] ? parts[2] : 1;
+    return new Date(year, month, day);
 }
 
 // TODO you can do it!
