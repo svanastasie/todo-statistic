@@ -22,6 +22,10 @@ function processCommand(command) {
                 console.log(comment);
             }
             break;
+        case 'important':
+            const importantTodos = allComments.filter(todo => todo.includes('!'));
+            importantTodos.forEach(todo => console.log(todo));
+            break;
         default:
             console.log('wrong command');
             break;
@@ -41,5 +45,7 @@ function getAllToDoComments() {
     })
     return allComments;
 }
+
+
 
 // TODO you can do it!
